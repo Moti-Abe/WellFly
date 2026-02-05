@@ -20,7 +20,7 @@ class _BottomNavState extends State<BottomNav> {
     SearchPage(),
     TripsPage(),
     InboxPage(),
-    AccontPage(),
+    AccountPage(),
   ];
 
   @override
