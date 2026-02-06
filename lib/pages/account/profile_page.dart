@@ -10,7 +10,7 @@ class ProfilePage extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
 
   final List<String> genders = ["Male", "Female", "Other"];
-  final List<String> countryCodes = ["+251", "+44", "+251", "+91"];
+  final List<String> countryCodes = ["+251", "+44", "+91"];
 
   Future<void> _pickDate(BuildContext context) async {
     final picked = await showDatePicker(
@@ -71,14 +71,18 @@ class ProfilePage extends StatelessWidget {
 
               Row(
                 children: [
-                  DropdownButton<String>(
-                    value: controller.countryCode.value,
-                    items: countryCodes
-                        .map((c) => DropdownMenuItem(value: c, child: Text(c)))
-                        .toList(),
-                    onChanged: (v) {
-                      controller.countryCode.value = v!;
-                    },
+                  Obx(
+                    () => DropdownButton<String>(
+                      value: controller.countryCode.value,
+                      items: countryCodes
+                          .map(
+                            (c) => DropdownMenuItem(value: c, child: Text(c)),
+                          )
+                          .toList(),
+                      onChanged: (v) {
+                        controller.countryCode.value = v!;
+                      },
+                    ),
                   ),
                   const SizedBox(width: 10),
                   Expanded(
@@ -96,15 +100,18 @@ class ProfilePage extends StatelessWidget {
 
               const SizedBox(height: 12),
 
-              DropdownButtonFormField<String>(
-                decoration: const InputDecoration(labelText: "Gender"),
-                items: genders
-                    .map((g) => DropdownMenuItem(value: g, child: Text(g)))
-                    .toList(),
-                onChanged: (v) {
-                  controller.gender.value = v!;
-                },
-                validator: (v) => v == null ? "Select gender" : null,
+              Obx(
+                () => DropdownButtonFormField<String>(
+                  value: controller.gender.value,
+                  decoration: const InputDecoration(labelText: "Gender"),
+                  items: genders
+                      .map((g) => DropdownMenuItem(value: g, child: Text(g)))
+                      .toList(),
+                  onChanged: (v) {
+                    controller.gender.value = v!;
+                  },
+                  validator: (v) => v == null ? "Select gender" : null,
+                ),
               ),
 
               const SizedBox(height: 12),
@@ -125,6 +132,7 @@ class ProfilePage extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
                       controller.updateProfile();

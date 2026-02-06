@@ -1,12 +1,13 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+
 class ProfileController extends GetxController {
   final fullName = ''.obs;
   final email = ''.obs;
   final phone = ''.obs;
-  final gender = ''.obs;
+  final gender = 'Male'.obs;
   final dob = ''.obs;
-  final countryCode = '+1'.obs;
+  final countryCode = '+251'.obs;
 
   final fullNameController = TextEditingController();
   final emailController = TextEditingController();
