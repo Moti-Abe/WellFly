@@ -3,6 +3,7 @@ import 'package:expedia/pages/home/cars/cars_page.dart';
 import 'package:expedia/pages/home/flights/flights_home.dart';
 import 'package:expedia/pages/home/package/packages_page.dart';
 import 'package:expedia/pages/home/stays/stays_home.dart';
+import 'package:expedia/pages/home/things_to_do/things_to_do_page.dart';
 import 'package:flutter/material.dart';
 import 'widgets/top_tab_bar.dart';
 import 'package:get/get.dart';
@@ -22,6 +23,7 @@ class _HomePageState extends State<HomePage> {
     FlightsPage(),
     CarsPage(),
     PackagesPage(),
+    ThingsToDoPage(),
   ];
 
   @override
@@ -29,24 +31,36 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: const Color.fromRGBO(40, 247, 178, 1),
-        title: Row(
-          children: [
-            Image.asset("assets/images/expedia_logo.png", height: 40),
-            // Expanded(child: Text("Flight App")),
-          ],
+        backgroundColor: Colors.transparent,
+        title: Padding(
+          padding: const EdgeInsets.only(top: 16.0),
+          child: Row(
+            children: [
+              Image.asset("assets/images/expedia_logo.png", height: 25),
+              // Expanded(child: Text("Flight App")),
+            ],
+          ),
         ),
         actions: [
           TextButton(
             onPressed: () {
               Get.to(() => const SignInPage());
             },
-            child: Text("Sign In"),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text("Sign In", style: TextStyle(color: Colors.blue[700])),
+                SizedBox(width: 4),
+                Icon(Icons.arrow_forward, size: 16, color: Colors.blue[700]),
+                SizedBox(width: 10),
+              ],
+            ),
           ),
         ],
       ),
       body: Column(
         children: [
+          SizedBox(height: 10.0),
           TopTabBar(
             selectedIndex: _selectedIndex,
             onChanged: (index) {
