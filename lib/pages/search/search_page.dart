@@ -40,7 +40,7 @@ class SearchPage extends StatelessWidget {
                 SearchTile(
                   title: "Cars",
                   icon: Icons.directions_car,
-                  onTap: () => Get.to(() => const CarsPage()),
+                  onTap: () => Get.to(() => const CarPage()),
                 ),
                 SearchTile(
                   title: "Packages",

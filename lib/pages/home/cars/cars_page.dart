@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 
 class CarPage extends StatelessWidget {
-  const CarPage({Key? key}) : super(key: key);
+  const CarPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Car Rental'),
-      ),
+      appBar: AppBar(title: const Text('Car Rental')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -20,10 +18,7 @@ class CarPage extends StatelessWidget {
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: () {},
-              child: const Text('Search Cars'),
-            ),
+            ElevatedButton(onPressed: () {}, child: const Text('Search Cars')),
           ],
         ),
       ),

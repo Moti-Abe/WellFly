@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-
 class CarSearchScreen extends StatelessWidget {
+  const CarSearchScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,4 +46,6 @@ class CarSearchScreen extends StatelessWidget {
       ),
     );
   }
-}
+  }
+
+
