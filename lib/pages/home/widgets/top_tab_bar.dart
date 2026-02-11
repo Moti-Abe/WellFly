@@ -99,9 +99,7 @@ class _TabItem extends StatelessWidget {
                 width: 56,
                 height: 56,
                 decoration: BoxDecoration(
-                  color: isSelected
-                      ? Colors.blue.withOpacity(0.12)
-                      : Colors.grey.withOpacity(0.06),
+                  color: isSelected ? Colors.blue : Colors.grey,
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: Icon(
