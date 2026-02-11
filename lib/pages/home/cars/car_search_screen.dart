@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 class CarSearchScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
