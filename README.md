@@ -1,4 +1,4 @@
-# expedia
+# expedia.
 
 A new Flutter project.
 
