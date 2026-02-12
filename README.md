@@ -20,3 +20,20 @@ The current focus of the project includes:
 - Responsive design for multiple platforms
 
 This project is mainly focused on frontend/UI development for now. API integration and backend connectivity may be added in future updates.
+
+flight-app/
+│
+├── android/        # Android-specific files
+├── ios/            # iOS-specific files
+├── web/            # Web support
+├── windows/        # Windows support
+├── macos/          # macOS support
+├── linux/          # Linux support
+│
+├── lib/            # Main application code (Dart files)
+│   ├── screens/    # App screens
+│   ├── widgets/    # Reusable widgets
+│   └── main.dart   # Entry point
+│
+├── assets/         # Images and other assets
+├── pubspec.yaml    # Project configuration
