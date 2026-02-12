@@ -1,3 +1,4 @@
+import 'package:expedia/pages/account/payment/payment_methods_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../account/controllers/profile_controller.dart';
@@ -37,7 +38,7 @@ class ProfilePage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                "Your Information",
+                "Edit Your Information",
                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
               ),
 
@@ -46,6 +47,7 @@ class ProfilePage extends StatelessWidget {
               TextFormField(
                 controller: controller.fullNameController,
                 decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
                   labelText: "Full Name",
                   prefixIcon: Icon(Icons.person),
                 ),
@@ -57,12 +59,13 @@ class ProfilePage extends StatelessWidget {
               TextFormField(
                 controller: controller.emailController,
                 decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
                   labelText: "Email",
                   prefixIcon: Icon(Icons.email),
                 ),
                 validator: (v) {
                   if (v!.isEmpty) return "Enter email";
-                  if (!v.contains("@")) return "Invalid email";
+                  if (!GetUtils.isEmail(v)) return "Invalid email";
                   return null;
                 },
               ),
@@ -90,6 +93,7 @@ class ProfilePage extends StatelessWidget {
                       controller: controller.phoneController,
                       keyboardType: TextInputType.phone,
                       decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
                         labelText: "Phone Number",
                       ),
                       validator: (v) => v!.isEmpty ? "Enter phone" : null,
@@ -103,7 +107,10 @@ class ProfilePage extends StatelessWidget {
               Obx(
                 () => DropdownButtonFormField<String>(
                   value: controller.gender.value,
-                  decoration: const InputDecoration(labelText: "Gender"),
+                  decoration: const InputDecoration(
+                    labelText: "Gender",
+                    border: OutlineInputBorder(),
+                  ),
                   items: genders
                       .map((g) => DropdownMenuItem(value: g, child: Text(g)))
                       .toList(),
@@ -121,6 +128,7 @@ class ProfilePage extends StatelessWidget {
                 readOnly: true,
                 decoration: const InputDecoration(
                   labelText: "Date of Birth",
+                  border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.calendar_today),
                 ),
                 onTap: () => _pickDate(context),
@@ -142,6 +150,16 @@ class ProfilePage extends StatelessWidget {
                     "Update",
                     style: TextStyle(color: Colors.white),
                   ),
+                ),
+              ),
+              SizedBox(height: 15.0),
+              TextButton(
+                onPressed: () {
+                  Get.to(() => PaymentMethodsPage());
+                },
+                child: Text(
+                  "Add Additional Traveler",
+                  style: TextStyle(color: Colors.blue),
                 ),
               ),
             ],
