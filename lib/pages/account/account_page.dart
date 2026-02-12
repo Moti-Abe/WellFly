@@ -1,117 +1,98 @@
-import 'package:expedia/pages/account/ceredits.dart';
-import 'package:expedia/pages/account/communication/communication.dart';
-import 'package:expedia/pages/account/help_and_feedback.dart';
-import 'package:expedia/pages/account/legal.dart';
-import 'package:expedia/pages/account/reviews.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'payment/payment_methods_page.dart';
-import '../account/profile_page.dart';
-import '../account/settings_page.dart';
+import 'widgets/account_header.dart';
+import 'widgets/onekey_card.dart';
+import 'widgets/account_card_item.dart';
+import 'ceredits.dart';
+import 'communication/communication.dart';
+import 'help_and_feedback.dart';
+import 'legal.dart';
+import 'reviews.dart';
+import 'profile_page.dart';
+import 'settings_page.dart';
 import '../home/auth/sign_in_page.dart';
+import 'payment/payment_methods_page.dart';
 
 class AccountPage extends StatelessWidget {
   const AccountPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            "Hi, Tuamay",
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 4),
-          const Text("Tuamay@email.com", style: TextStyle(color: Colors.grey)),
+    return Scaffold(
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            const AccountHeader(),
 
-          const SizedBox(height: 24),
+            const SizedBox(height: 20),
 
-          ListTile(
-            leading: const Icon(Icons.person),
-            title: const Text("Profile"),
-            trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-            onTap: () {
-              Get.to(() => ProfilePage());
-            },
-          ),
+            const OneKeyCard(),
 
-          ListTile(
-            leading: const Icon(Icons.credit_card),
-            title: const Text("Payment Methods"),
-            trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-            onTap: () {
-              Get.to(() => const PaymentMethodsPage());
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.safety_check),
-            title: const Text("Ceredits"),
-            trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-            onTap: () {
-              Get.to(() => Ceredits());
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.message),
-            title: const Text("Communication"),
-            trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-            onTap: () {
-              Get.to(() => CommunicationPage());
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.rate_review),
-            title: const Text("Reviews"),
-            trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-            onTap: () {
-              Get.to(() => Reviews());
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.settings),
-            title: const Text("Settings"),
-            trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-            onTap: () {
-              Get.to(() => SettingsPage());
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.gavel),
-            title: const Text("legal"),
-            trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-            onTap: () {
-              Get.to(() => Legal());
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.question_mark),
-            title: const Text("Help and feedback"),
-            trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-            onTap: () {
-              Get.to(() => HelpAndFeedback());
-            },
-          ),
-          SizedBox(height: 10),
-          SizedBox(
-            width: double.infinity,
-            child: TextButton(
-              style: TextButton.styleFrom(
-                backgroundColor: Colors.blue,
-                padding: const EdgeInsets.symmetric(vertical: 14),
-              ),
-              onPressed: () {
-                Get.to(() => const SignInPage());
-              },
-              child: const Text(
-                "Sign Out",
-                style: TextStyle(color: Colors.white, fontSize: 16),
+            const SizedBox(height: 20),
+
+            AccountCardItem(
+              icon: Icons.person,
+              title: "Profile",
+              onTap: () => Get.to(() => ProfilePage()),
+            ),
+            AccountCardItem(
+              icon: Icons.credit_card,
+              title: "Payment Methods",
+              onTap: () => Get.to(() => const PaymentMethodsPage()),
+            ),
+            AccountCardItem(
+              icon: Icons.safety_check,
+              title: "Credits",
+              onTap: () => Get.to(() => Ceredits()),
+            ),
+            AccountCardItem(
+              icon: Icons.message,
+              title: "Communication",
+              onTap: () => Get.to(() => CommunicationPage()),
+            ),
+            AccountCardItem(
+              icon: Icons.rate_review,
+              title: "Reviews",
+              onTap: () => Get.to(() => Reviews()),
+            ),
+            AccountCardItem(
+              icon: Icons.settings,
+              title: "Security and Settings",
+              onTap: () => Get.to(() => SettingsPage()),
+            ),
+            AccountCardItem(
+              icon: Icons.gavel,
+              title: "Legal",
+              onTap: () => Get.to(() => Legal()),
+            ),
+            AccountCardItem(
+              icon: Icons.question_mark,
+              title: "Help and feedback",
+              onTap: () => Get.to(() => FeedbackPage()),
+            ),
+
+            const SizedBox(height: 20),
+
+            SizedBox(
+              width: double.infinity,
+              child: TextButton(
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                ),
+                onPressed: () {
+                  // Get.offAll(() => const SignInPage());
+                  Get.to(() => const SignInPage());
+                },
+                child: const Text(
+                  "Sign Out",
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
