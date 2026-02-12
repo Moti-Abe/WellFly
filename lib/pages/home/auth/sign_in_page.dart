@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../widgets/social_button.dart';
 
 class SignInPage extends StatefulWidget {
@@ -44,7 +45,7 @@ class _SignInPageState extends State<SignInPage> {
                   if (value == null || value.isEmpty) {
                     return "Enter email";
                   }
-                  if (!value.contains("@")) {
+                  if (!GetUtils.isEmail(value)) {
                     return "Enter valid email";
                   }
                   return null;
