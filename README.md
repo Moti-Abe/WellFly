@@ -36,29 +36,19 @@ This project is mainly focused on frontend/UI development for now. API integrati
 
 ## 📸 Project Screenshots
 <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;">
-<table>
+<table align="center">
   <tr>
-    <td><img src="https://github.com/user-attachments/assets/cc9625cf-6b2f-4736-8c4a-a9c4ba2e8d3a" width="400" height="800"/></td>
-    <td><img src="https://github.com/user-attachments/assets/a63c7e3a-0f2b-45f5-9971-1b0ac0cf45aa" width="400" height="800"/></td>
+    <td><img src="https://github.com/user-attachments/assets/cc9625cf-6b2f-4736-8c4a-a9c4ba2e8d3a" width="300" height="600"/></td>
+    <td><img src="https://github.com/user-attachments/assets/a63c7e3a-0f2b-45f5-9971-1b0ac0cf45aa" width="300" height="600"/></td>
+    <td><img src="https://github.com/user-attachments/assets/1e5c82ba-01c6-4c2f-948b-bc29a7118012" width="300" height="600"/></td>
   </tr>
 
   <tr>
-    <td><img src="https://github.com/user-attachments/assets/1e5c82ba-01c6-4c2f-948b-bc29a7118012" width="400" height="800"/></td>
-    <td><img src="https://github.com/user-attachments/assets/1412dcb0-3192-4c1d-a2fb-c3b8bf5e47e1" width="400" height="800"/></td>
-  </tr>
-
-  <tr>
-    <td><img src="https://github.com/user-attachments/assets/4ff8741a-8492-4401-a9ba-b6b46cf3a72b" width="400" height="800"/></td>
-    <td><img src="https://github.com/user-attachments/assets/22b5e262-5bfb-459f-b7d6-47a6839cb30b" width="400" height="800"/></td>
+    <td><img src="https://github.com/user-attachments/assets/1412dcb0-3192-4c1d-a2fb-c3b8bf5e47e1" width="300" height="600"/></td>
+    <td><img src="https://github.com/user-attachments/assets/4ff8741a-8492-4401-a9ba-b6b46cf3a72b" width="300" height="600"/></td>
+    <td><img src="https://github.com/user-attachments/assets/22b5e262-5bfb-459f-b7d6-47a6839cb30b" width="300" height="600"/></td>
   </tr>
 </table>
-
-
-
-
-
-
-
 
 ## 🤝 Team Collaboration
 
