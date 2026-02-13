@@ -63,3 +63,12 @@ We are focusing on:
 - UI consistency
 
 - Team coordination
+
+  ## 📄 License
+
+This project is intended for educational and portfolio purposes only.
+
+## 🌟 Support
+
+If you find this project helpful, feel free to ⭐ star the repository!
+We welcome feedback, contributions, and ideas!
