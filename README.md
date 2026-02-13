@@ -33,3 +33,17 @@ This project is mainly focused on frontend/UI development for now. API integrati
 ## 📂 Project Structure
 
 <img width="1352" height="1139" alt="image" src="https://github.com/user-attachments/assets/5c007e83-d20b-4cb0-8e7c-8bbee026d074" />
+
+## 🤝 Team Collaboration
+
+This project is developed by a team of three members as a collaborative learning experience.
+
+We are focusing on:
+
+- Git workflow (branches, pull requests, merging)
+
+- Clean code structure
+
+- UI consistency
+
+Team coordinatio
