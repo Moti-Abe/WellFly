@@ -46,4 +46,4 @@ We are focusing on:
 
 - UI consistency
 
-Team coordinatio
+- Team coordination
