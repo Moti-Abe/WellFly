@@ -22,3 +22,10 @@ The current focus of the project includes:
 This project is mainly focused on frontend/UI development for now. API integration and backend connectivity may be added in future updates.
 
 
+## 🚀 Built With
+
+- Flutter (Dart)
+
+- Material Design
+
+- Android Studio / VS Code
