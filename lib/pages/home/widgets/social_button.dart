@@ -13,7 +13,7 @@ class SocialButton extends StatelessWidget {
     required this.asset,
     required this.onPressed,
     this.backgroundColor = Colors.blue,
-    this.textColor = Colors.black,
+    this.textColor = Colors.white,
   });
 
   @override
