@@ -18,11 +18,12 @@ class SettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Settings ")),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+        body: Padding(
+          padding: const EdgeInsets.all(16),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
             SettingsCard(
               icon: Icons.email,
               title: "Email",
@@ -88,6 +89,7 @@ class SettingsPage extends StatelessWidget {
           ],
         ),
       ),
+    ),
     );
   }
 }
