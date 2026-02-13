@@ -29,3 +29,7 @@ This project is mainly focused on frontend/UI development for now. API integrati
 - Material Design
 
 - Android Studio / VS Code
+
+## 📂 Project Structure
+
+<img width="1352" height="1139" alt="image" src="https://github.com/user-attachments/assets/5c007e83-d20b-4cb0-8e7c-8bbee026d074" />
