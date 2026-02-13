@@ -64,7 +64,7 @@ We are focusing on:
 
 - Team coordination
 
-  ## 📄 License
+## 📄 License
 
 This project is intended for educational and portfolio purposes only.
 
