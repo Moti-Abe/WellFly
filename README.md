@@ -64,6 +64,12 @@ We are focusing on:
 
 - Team coordination
 
+## 🎯 Future Plans
+
+- Backend and API integration for real-time flight and stay data.
+- Booking confirmation workflows and payment integration.
+- Google authentication
+
 ## 📄 License
 
 This project is intended for educational and portfolio purposes only.
