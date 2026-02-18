@@ -28,7 +28,11 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final pageBg = isDark ? const Color(0xFF0B0F1A) : Colors.white;
+
     return Scaffold(
+      backgroundColor: pageBg,
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.blueAccent,
