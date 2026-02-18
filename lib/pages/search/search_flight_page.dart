@@ -2,7 +2,7 @@ import 'package:expedia/pages/home/flights/multi_city_page.dart';
 import 'package:flutter/material.dart';
 import '../home/flights/widgets/flight_tab_bar.dart';
 import 'package:expedia/pages/home/flights/OnewayPage/one_way_page.dart';
-// import 'package:expedia/pages/home/flights/round_trip.dart';
+import 'package:expedia/pages/home/flights/roundtrip/round_trip.dart';
 
 class SearchFlightPage extends StatefulWidget {
   const SearchFlightPage({super.key});
@@ -14,10 +14,10 @@ class SearchFlightPage extends StatefulWidget {
 class _SearchFlightPageState extends State<SearchFlightPage> {
   int _flightIndex = 0;
 
-  final List<Widget> _flightPages = const [
-    // RoundtripPage(),
-    OneWayPage(),
-    MultiCityPage(),
+  final List<Widget> _flightPages = [
+    RoundtripPage(),
+    const OneWayPage(),
+    const MultiCityPage(),
   ];
 
   @override
