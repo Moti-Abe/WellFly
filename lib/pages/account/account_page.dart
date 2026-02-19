@@ -10,7 +10,7 @@ import 'legal.dart';
 import 'reviews.dart';
 import 'profile_page.dart';
 import 'settings_page.dart';
-import '../home/auth/sign_in_page.dart';
+import '../home/auth/auth_controller.dart';
 import 'payment/payment_methods_page.dart';
 
 class AccountPage extends StatelessWidget {
@@ -82,7 +82,7 @@ class AccountPage extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 14),
                 ),
                 onPressed: () {
-                  Get.offAll(() => const SignInPage());
+                  Get.find<AuthController>().logout();
                 },
                 child: const Text(
                   "Sign Out",

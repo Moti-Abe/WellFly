@@ -1,12 +1,12 @@
-// import 'package:expedia/pages/home/auth/sign_in_page.dart';
+import 'package:expedia/pages/home/auth/auth_controller.dart';
 import 'package:expedia/pages/home/cars/cars_page.dart';
 import 'package:expedia/pages/home/flights/flights_home.dart';
 import 'package:expedia/pages/home/package/packages_page.dart';
 import 'package:expedia/pages/home/stays/stays_home.dart';
 import 'package:expedia/pages/home/things_to_do/things_to_do_page.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'widgets/top_tab_bar.dart';
-// import 'package:get/get.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -44,7 +44,7 @@ class _HomePageState extends State<HomePage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'FlightApp',
+              'WellFly',
               style: TextStyle(
                 color: isDark ? Colors.white : Colors.black,
                 fontSize: 22,
@@ -54,14 +54,27 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         ),
-        // actions: [
-        //   TextButton(
-        //     onPressed: () {
-        //       Get.to(() => const SignInPage());
-        //     },
-        //     child: Text("Sign In"),
-        //   ),
-        // ],
+        actions: [
+          TextButton.icon(
+            onPressed: () {
+              Get.find<AuthController>().logout();
+            },
+            icon: Icon(
+              Icons.arrow_back,
+              size: 18,
+              color: isDark ? Colors.white70 : Colors.black87,
+            ),
+            label: Text(
+              'Sign Out',
+              style: TextStyle(
+                color: isDark ? Colors.white70 : Colors.black87,
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          const SizedBox(width: 4),
+        ],
       ),
       body: Column(
         children: [
@@ -81,4 +94,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
