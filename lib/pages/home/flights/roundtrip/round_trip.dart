@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../widgets/flight_text_field.dart';
 import '../widgets/search_button.dart';
+import '../../widgets/travel_image_section.dart';
 import '../widgets/traveler_modal.dart';
 import '../widgets/city_search_screen.dart';
 import 'models/round_trip_models.dart';
@@ -138,6 +139,7 @@ class _RoundtripPageState extends State<RoundtripPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Form(
@@ -170,16 +172,23 @@ class _RoundtripPageState extends State<RoundtripPage> {
                     onTap: _swapCities,
                     child: Container(
                       padding: const EdgeInsets.all(8),
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
+                      decoration: BoxDecoration(
+                        color: isDark ? const Color(0xFF1E2433) : Colors.white,
                         shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(color: Colors.black12, blurRadius: 4),
-                        ],
+                        border: Border.all(
+                          color: isDark
+                              ? const Color(0xFF2A3141)
+                              : Colors.grey.shade400,
+                        ),
+                        boxShadow: isDark
+                            ? []
+                            : const [
+                                BoxShadow(color: Colors.black12, blurRadius: 4),
+                              ],
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.swap_vert,
-                        color: Colors.blue,
+                        color: isDark ? Colors.white70 : Colors.blue,
                         size: 28,
                       ),
                     ),
@@ -235,6 +244,7 @@ class _RoundtripPageState extends State<RoundtripPage> {
 
             const SizedBox(height: 30),
             SearchButton(onPressed: _performSearch),
+            const TravelImageSection(),
           ],
         ),
       ),

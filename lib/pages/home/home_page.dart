@@ -35,11 +35,23 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: pageBg,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: isDark
+            ? const Color(0xFF0B0F1A)
+            : Colors.white.withValues(alpha: 0.95),
+        surfaceTintColor: Colors.transparent,
+        titleSpacing: 16,
         title: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Image.asset("assets/images/wellfly.png", height: 40),
-            // Expanded(child: Text("Flight App")),
+            Text(
+              'FlightApp',
+              style: TextStyle(
+                color: isDark ? Colors.white : Colors.black,
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 0.5,
+              ),
+            ),
           ],
         ),
         // actions: [
@@ -69,3 +81,4 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
+
