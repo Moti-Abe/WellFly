@@ -112,9 +112,7 @@ class _MultiCitySearchPageState extends State<MultiCitySearchPage> {
     }
     if (addThirdLeg && depart3Date == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Select a departure date for flight 3'),
-        ),
+        const SnackBar(content: Text('Select a departure date for flight 3')),
       );
       return;
     }
@@ -147,7 +145,9 @@ class _MultiCitySearchPageState extends State<MultiCitySearchPage> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final pageBackground = isDark ? const Color(0xFF0B0F1A) : Colors.transparent;
+    final pageBackground = isDark
+        ? const Color(0xFF0B0F1A)
+        : Colors.transparent;
     return Scaffold(
       backgroundColor: pageBackground,
       body: SafeArea(
@@ -158,8 +158,6 @@ class _MultiCitySearchPageState extends State<MultiCitySearchPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildHeader(),
-                const SizedBox(height: 18),
                 _buildTravelerTile(),
                 const SizedBox(height: 18),
                 _buildFlightSection(
@@ -207,35 +205,6 @@ class _MultiCitySearchPageState extends State<MultiCitySearchPage> {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildHeader() {
-    final textColor = Theme.of(context).colorScheme.onSurface;
-    final subtitleColor = textColor.withValues(alpha: 0.75);
-    return Row(
-      children: [
-        const Icon(Icons.flight_takeoff, color: Color(0xFF7FB5FF)),
-        const SizedBox(width: 10),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Multi-city flights',
-              style: TextStyle(
-                color: textColor,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              'Build a trip with two or three legs',
-              style: TextStyle(color: subtitleColor, fontSize: 13),
-            ),
-          ],
-        ),
-      ],
     );
   }
 
@@ -295,7 +264,9 @@ class _MultiCitySearchPageState extends State<MultiCitySearchPage> {
   }
 
   Widget _buildRemoveFlightButton() {
-    final secondaryColor = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6);
+    final secondaryColor = Theme.of(
+      context,
+    ).colorScheme.onSurface.withValues(alpha: 0.6);
     return Align(
       alignment: Alignment.centerLeft,
       child: TextButton.icon(
@@ -309,10 +280,7 @@ class _MultiCitySearchPageState extends State<MultiCitySearchPage> {
           });
         },
         icon: Icon(Icons.close, color: secondaryColor),
-        label: Text(
-          'Remove flight 3',
-          style: TextStyle(color: secondaryColor),
-        ),
+        label: Text('Remove flight 3', style: TextStyle(color: secondaryColor)),
       ),
     );
   }
@@ -384,9 +352,7 @@ class _MultiCitySearchPageState extends State<MultiCitySearchPage> {
                     width: 40,
                     height: 40,
                     decoration: BoxDecoration(
-                      color: isDark
-                          ? const Color(0xFF1E2433)
-                          : Colors.white,
+                      color: isDark ? const Color(0xFF1E2433) : Colors.white,
                       shape: BoxShape.circle,
                       border: Border.all(
                         color: isDark
@@ -427,7 +393,9 @@ class _MultiCitySearchPageState extends State<MultiCitySearchPage> {
                     color: Colors.blue,
                   ),
                   labelText: 'Departure date',
-                  labelStyle: TextStyle(color: colors.onSurface.withValues(alpha: 0.6)),
+                  labelStyle: TextStyle(
+                    color: colors.onSurface.withValues(alpha: 0.6),
+                  ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -468,7 +436,9 @@ class _MultiCitySearchPageState extends State<MultiCitySearchPage> {
             decoration: InputDecoration(
               prefixIcon: const Icon(Icons.location_on, color: Colors.blue),
               labelText: label,
-              labelStyle: TextStyle(color: colors.onSurface.withValues(alpha: 0.6)),
+              labelStyle: TextStyle(
+                color: colors.onSurface.withValues(alpha: 0.6),
+              ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
               ),

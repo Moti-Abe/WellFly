@@ -6,7 +6,17 @@ import 'multi_city_flight_details_page.dart';
 import 'multi_city_review_fare_page.dart';
 import 'widgets/multi_city_flight_card.dart';
 
-class MultiCityRecommendedPage extends StatelessWidget {
+// Sort options for the Sort & Filter sheet
+enum _SortOption {
+  recommended,
+  priceLow,
+  priceHigh,
+  durationShort,
+  departEarly,
+  departLate,
+}
+
+class MultiCityRecommendedPage extends StatefulWidget {
   final MultiCitySelection selection;
   final int segmentIndex;
 
@@ -17,20 +27,75 @@ class MultiCityRecommendedPage extends StatelessWidget {
   });
 
   @override
+  State<MultiCityRecommendedPage> createState() =>
+      _MultiCityRecommendedPageState();
+}
+
+class _MultiCityRecommendedPageState extends State<MultiCityRecommendedPage> {
+  // Sort & Filter state
+  _SortOption _sortOption = _SortOption.recommended;
+  String _stopFilter = 'Any';
+  Set<String> _airlineFilter = {};
+
+  /// Parse a duration string like "5h 30m" into total minutes.
+  int _parseDurationMinutes(String d) {
+    final hMatch = RegExp(r'(\d+)h').firstMatch(d);
+    final mMatch = RegExp(r'(\d+)m').firstMatch(d);
+    return (int.tryParse(hMatch?.group(1) ?? '0') ?? 0) * 60 +
+        (int.tryParse(mMatch?.group(1) ?? '0') ?? 0);
+  }
+
+  /// Apply current sort & filter to a raw flight list.
+  List<MultiCityFlight> _applyFilters(List<MultiCityFlight> raw) {
+    var list = raw.where((f) {
+      if (_stopFilter == 'Nonstop' && f.stops != 'Nonstop') return false;
+      if (_stopFilter == '1 stop or fewer' &&
+          f.stops != 'Nonstop' &&
+          f.stops != '1 stop') {
+        return false;
+      }
+      if (_airlineFilter.isNotEmpty && !_airlineFilter.contains(f.airline)) {
+        return false;
+      }
+      return true;
+    }).toList();
+
+    switch (_sortOption) {
+      case _SortOption.recommended:
+        break;
+      case _SortOption.priceLow:
+        list.sort((a, b) => a.price.compareTo(b.price));
+      case _SortOption.priceHigh:
+        list.sort((a, b) => b.price.compareTo(a.price));
+      case _SortOption.durationShort:
+        list.sort(
+          (a, b) => _parseDurationMinutes(
+            a.duration,
+          ).compareTo(_parseDurationMinutes(b.duration)),
+        );
+      case _SortOption.departEarly:
+        list.sort((a, b) => a.departTime.compareTo(b.departTime));
+      case _SortOption.departLate:
+        list.sort((a, b) => b.departTime.compareTo(a.departTime));
+    }
+    return list;
+  }
+
+  @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final colors = Theme.of(context).colorScheme;
-    final pageBackground =
-        isDark ? const Color(0xFF0B0F1A) : colors.surface;
-    final criteria = selection.criteria;
-    final segmentFrom = _segmentFrom(criteria, segmentIndex);
-    final segmentTo = _segmentTo(criteria, segmentIndex);
-    final segmentDate = _segmentDate(criteria, segmentIndex);
+    final pageBackground = isDark ? const Color(0xFF0B0F1A) : colors.surface;
+    final criteria = widget.selection.criteria;
+    final segmentFrom = _segmentFrom(criteria, widget.segmentIndex);
+    final segmentTo = _segmentTo(criteria, widget.segmentIndex);
+    final segmentDate = _segmentDate(criteria, widget.segmentIndex);
 
-    final filteredFlights =
+    final rawFlights =
         (segmentFrom == null || segmentTo == null || segmentDate == null)
-            ? <MultiCityFlight>[]
-            : generateFlightsForRoute(segmentFrom, segmentTo, segmentDate);
+        ? <MultiCityFlight>[]
+        : generateFlightsForRoute(segmentFrom, segmentTo, segmentDate);
+    final filteredFlights = _applyFilters(rawFlights);
 
     return Scaffold(
       backgroundColor: pageBackground,
@@ -39,8 +104,10 @@ class MultiCityRecommendedPage extends StatelessWidget {
           children: [
             _buildSearchPillBar(context, criteria),
             Expanded(
-              child: filteredFlights.isEmpty
+              child: rawFlights.isEmpty
                   ? _buildEmptyState(context)
+                  : filteredFlights.isEmpty
+                  ? _buildNoFilterResults(context)
                   : ListView(
                       padding: const EdgeInsets.only(bottom: 80),
                       children: [
@@ -50,10 +117,7 @@ class MultiCityRecommendedPage extends StatelessWidget {
                         ...filteredFlights.map(
                           (flight) => MultiCityFlightCard(
                             flight: flight,
-                            onSelect: () => _openReviewFare(
-                              context,
-                              flight,
-                            ),
+                            onSelect: () => _openReviewFare(context, flight),
                           ),
                         ),
                       ],
@@ -76,9 +140,7 @@ class MultiCityRecommendedPage extends StatelessWidget {
     final colors = Theme.of(context).colorScheme;
     final bgColor = isDark ? const Color(0xFF0B0F1A) : colors.surface;
     final pillBg = isDark ? const Color(0xFF151A24) : Colors.white;
-    final pillBorder = isDark
-        ? const Color(0xFF2A3141)
-        : Colors.grey.shade300;
+    final pillBorder = isDark ? const Color(0xFF2A3141) : Colors.grey.shade300;
 
     final routeText = _buildRouteLine(criteria);
     final dateText =
@@ -124,7 +186,11 @@ class MultiCityRecommendedPage extends StatelessWidget {
                       color: Color(0xFFFDD835),
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(Icons.search, size: 20, color: Colors.black),
+                    child: const Icon(
+                      Icons.search,
+                      size: 20,
+                      color: Colors.black,
+                    ),
                   ),
                   const SizedBox(width: 10),
                   Expanded(
@@ -172,9 +238,7 @@ class MultiCityRecommendedPage extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final colors = Theme.of(context).colorScheme;
     final cardBg = isDark ? const Color(0xFF151A24) : Colors.white;
-    final borderColor = isDark
-        ? const Color(0xFF2A3141)
-        : Colors.grey.shade200;
+    final borderColor = isDark ? const Color(0xFF2A3141) : Colors.grey.shade200;
 
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 12, 16, 0),
@@ -192,9 +256,7 @@ class MultiCityRecommendedPage extends StatelessWidget {
             width: 44,
             height: 44,
             decoration: BoxDecoration(
-              color: isDark
-                  ? const Color(0xFF1A2340)
-                  : const Color(0xFFE8EAF6),
+              color: isDark ? const Color(0xFF1A2340) : const Color(0xFFE8EAF6),
               borderRadius: BorderRadius.circular(10),
             ),
             child: const Icon(
@@ -287,9 +349,50 @@ class MultiCityRecommendedPage extends StatelessWidget {
     );
   }
 
+  // ──────────── No filter results ────────────
+  Widget _buildNoFilterResults(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.filter_alt_off,
+              size: 48,
+              color: colors.onSurface.withValues(alpha: 0.4),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'No flights match your filters',
+              style: TextStyle(
+                color: colors.onSurface.withValues(alpha: 0.7),
+                fontSize: 15,
+              ),
+            ),
+            const SizedBox(height: 8),
+            TextButton(
+              onPressed: () => setState(() {
+                _sortOption = _SortOption.recommended;
+                _stopFilter = 'Any';
+                _airlineFilter = {};
+              }),
+              child: const Text('Clear all filters'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   // ──────────── Sort & Filter FAB ────────────
   Widget _buildSortFilterFab(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final hasActiveFilters =
+        _sortOption != _SortOption.recommended ||
+        _stopFilter != 'Any' ||
+        _airlineFilter.isNotEmpty;
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(28),
@@ -302,9 +405,27 @@ class MultiCityRecommendedPage extends StatelessWidget {
         ],
       ),
       child: ElevatedButton.icon(
-        onPressed: () {},
+        onPressed: () => _showSortFilterSheet(),
         icon: const Icon(Icons.tune, size: 18),
-        label: const Text('Sort & Filter'),
+        label: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('Sort & Filter'),
+            if (hasActiveFilters) ...[
+              const SizedBox(width: 6),
+              Container(
+                width: 8,
+                height: 8,
+                decoration: BoxDecoration(
+                  color: isDark
+                      ? const Color(0xFF7FB5FF)
+                      : const Color(0xFF1565C0),
+                  shape: BoxShape.circle,
+                ),
+              ),
+            ],
+          ],
+        ),
         style: ElevatedButton.styleFrom(
           backgroundColor: isDark ? const Color(0xFF1E2433) : Colors.white,
           foregroundColor: isDark
@@ -315,13 +436,299 @@ class MultiCityRecommendedPage extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(28),
             side: BorderSide(
-              color: isDark
-                  ? const Color(0xFF2A3141)
-                  : Colors.grey.shade300,
+              color: isDark ? const Color(0xFF2A3141) : Colors.grey.shade300,
             ),
           ),
         ),
       ),
+    );
+  }
+
+  // ──────────── Sort & Filter Bottom Sheet ────────────
+  void _showSortFilterSheet() {
+    var tempSort = _sortOption;
+    var tempStop = _stopFilter;
+    var tempAirlines = Set<String>.from(_airlineFilter);
+
+    // Collect available airlines from current route flights
+    final criteria = widget.selection.criteria;
+    final segmentFrom = _segmentFrom(criteria, widget.segmentIndex);
+    final segmentTo = _segmentTo(criteria, widget.segmentIndex);
+    final segmentDate = _segmentDate(criteria, widget.segmentIndex);
+    final rawFlights =
+        (segmentFrom == null || segmentTo == null || segmentDate == null)
+        ? <MultiCityFlight>[]
+        : generateFlightsForRoute(segmentFrom, segmentTo, segmentDate);
+    final availableAirlines = rawFlights.map((f) => f.airline).toSet().toList()
+      ..sort();
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (sheetContext) {
+        final isDark = Theme.of(sheetContext).brightness == Brightness.dark;
+        final colors = Theme.of(sheetContext).colorScheme;
+        final bgColor = isDark ? const Color(0xFF151A24) : Colors.white;
+        final accentColor = isDark
+            ? const Color(0xFF7FB5FF)
+            : const Color(0xFF1565C0);
+
+        return StatefulBuilder(
+          builder: (ctx, setSheetState) {
+            Widget sortTile(String label, _SortOption value) {
+              final selected = tempSort == value;
+              return ListTile(
+                dense: true,
+                contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+                title: Text(
+                  label,
+                  style: TextStyle(
+                    color: selected ? accentColor : colors.onSurface,
+                    fontWeight: selected ? FontWeight.bold : FontWeight.normal,
+                  ),
+                ),
+                trailing: selected
+                    ? Icon(Icons.check, color: accentColor, size: 20)
+                    : null,
+                onTap: () => setSheetState(() => tempSort = value),
+              );
+            }
+
+            Widget stopChip(String label) {
+              final selected = tempStop == label;
+              return Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: ChoiceChip(
+                  label: Text(label),
+                  selected: selected,
+                  onSelected: (_) => setSheetState(() => tempStop = label),
+                  selectedColor: accentColor.withValues(alpha: 0.2),
+                  labelStyle: TextStyle(
+                    color: selected ? accentColor : colors.onSurface,
+                    fontWeight: selected ? FontWeight.bold : FontWeight.normal,
+                  ),
+                  side: BorderSide(
+                    color: selected
+                        ? accentColor
+                        : colors.onSurface.withValues(alpha: 0.3),
+                  ),
+                  showCheckmark: false,
+                ),
+              );
+            }
+
+            return Container(
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(sheetContext).size.height * 0.75,
+              ),
+              decoration: BoxDecoration(
+                color: bgColor,
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(20),
+                ),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Handle bar
+                  Container(
+                    margin: const EdgeInsets.only(top: 12, bottom: 4),
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: colors.onSurface.withValues(alpha: 0.3),
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                  // Title row
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    child: Row(
+                      children: [
+                        Text(
+                          'Sort & Filter',
+                          style: TextStyle(
+                            color: colors.onSurface,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const Spacer(),
+                        TextButton(
+                          onPressed: () => setSheetState(() {
+                            tempSort = _SortOption.recommended;
+                            tempStop = 'Any';
+                            tempAirlines = {};
+                          }),
+                          child: Text(
+                            'Reset',
+                            style: TextStyle(color: accentColor),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Divider(height: 1),
+                  // Scrollable content
+                  Flexible(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // ── Sort By ──
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(24, 16, 24, 4),
+                            child: Text(
+                              'Sort by',
+                              style: TextStyle(
+                                color: colors.onSurface,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          sortTile('Recommended', _SortOption.recommended),
+                          sortTile('Price (low to high)', _SortOption.priceLow),
+                          sortTile(
+                            'Price (high to low)',
+                            _SortOption.priceHigh,
+                          ),
+                          sortTile(
+                            'Duration (shortest)',
+                            _SortOption.durationShort,
+                          ),
+                          sortTile(
+                            'Departure (earliest)',
+                            _SortOption.departEarly,
+                          ),
+                          sortTile(
+                            'Departure (latest)',
+                            _SortOption.departLate,
+                          ),
+                          const SizedBox(height: 8),
+                          const Divider(height: 1),
+                          // ── Stops ──
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
+                            child: Text(
+                              'Stops',
+                              style: TextStyle(
+                                color: colors.onSurface,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 24),
+                            child: Wrap(
+                              children: [
+                                stopChip('Any'),
+                                stopChip('Nonstop'),
+                                stopChip('1 stop or fewer'),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          const Divider(height: 1),
+                          // ── Airlines ──
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(24, 16, 24, 4),
+                            child: Text(
+                              'Airlines',
+                              style: TextStyle(
+                                color: colors.onSurface,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          ...availableAirlines.map((airline) {
+                            final selected =
+                                tempAirlines.isEmpty ||
+                                tempAirlines.contains(airline);
+                            return CheckboxListTile(
+                              dense: true,
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 24,
+                              ),
+                              title: Text(
+                                airline,
+                                style: TextStyle(color: colors.onSurface),
+                              ),
+                              value: selected,
+                              activeColor: accentColor,
+                              onChanged: (val) {
+                                setSheetState(() {
+                                  if (val == true) {
+                                    if (tempAirlines.isEmpty) {
+                                      tempAirlines = availableAirlines.toSet();
+                                    }
+                                    tempAirlines.add(airline);
+                                  } else {
+                                    if (tempAirlines.isEmpty) {
+                                      tempAirlines = availableAirlines.toSet();
+                                    }
+                                    tempAirlines.remove(airline);
+                                    if (tempAirlines.length ==
+                                        availableAirlines.length) {
+                                      tempAirlines = {};
+                                    }
+                                  }
+                                });
+                              },
+                            );
+                          }),
+                        ],
+                      ),
+                    ),
+                  ),
+                  // Apply button
+                  SafeArea(
+                    top: false,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+                      child: SizedBox(
+                        width: double.infinity,
+                        height: 48,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              _sortOption = tempSort;
+                              _stopFilter = tempStop;
+                              _airlineFilter = tempAirlines;
+                            });
+                            Navigator.pop(sheetContext);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF1565C0),
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(24),
+                            ),
+                          ),
+                          child: const Text(
+                            'Apply',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
     );
   }
 
@@ -376,8 +783,8 @@ class MultiCityRecommendedPage extends StatelessWidget {
 
   // ──────────── Flight Selection Logic ────────────
   void _handleSelect(BuildContext context, MultiCityFlight flight) {
-    if (segmentIndex == 1) {
-      final nextSelection = selection.copyWith(flight1: flight);
+    if (widget.segmentIndex == 1) {
+      final nextSelection = widget.selection.copyWith(flight1: flight);
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -387,8 +794,9 @@ class MultiCityRecommendedPage extends StatelessWidget {
           ),
         ),
       );
-    } else if (segmentIndex == 2 && selection.criteria.hasThirdLeg) {
-      final nextSelection = selection.copyWith(flight2: flight);
+    } else if (widget.segmentIndex == 2 &&
+        widget.selection.criteria.hasThirdLeg) {
+      final nextSelection = widget.selection.copyWith(flight2: flight);
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -398,8 +806,8 @@ class MultiCityRecommendedPage extends StatelessWidget {
           ),
         ),
       );
-    } else if (segmentIndex == 2) {
-      final nextSelection = selection.copyWith(flight2: flight);
+    } else if (widget.segmentIndex == 2) {
+      final nextSelection = widget.selection.copyWith(flight2: flight);
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -408,7 +816,7 @@ class MultiCityRecommendedPage extends StatelessWidget {
         ),
       );
     } else {
-      final nextSelection = selection.copyWith(flight3: flight);
+      final nextSelection = widget.selection.copyWith(flight3: flight);
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -475,5 +883,4 @@ class MultiCityRecommendedPage extends StatelessWidget {
         return null;
     }
   }
-
 }
