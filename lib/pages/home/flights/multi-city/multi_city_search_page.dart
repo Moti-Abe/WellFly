@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../widgets/city_search_screen.dart';
 import '../widgets/search_button.dart';
+import '../../widgets/travel_image_section.dart';
 import '../widgets/traveler_modal.dart';
 import 'models.dart';
 import 'multi_city_recommended_page.dart';
@@ -200,6 +201,7 @@ class _MultiCitySearchPageState extends State<MultiCitySearchPage> {
                 ],
                 const SizedBox(height: 28),
                 SearchButton(onPressed: _startSearch),
+                const TravelImageSection(),
               ],
             ),
           ),

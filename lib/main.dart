@@ -18,8 +18,22 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(
       () => GetMaterialApp(
-        theme: ThemeData.light(),
-        darkTheme: ThemeData.dark(),
+        theme: ThemeData.light().copyWith(
+          appBarTheme: const AppBarTheme(
+            backgroundColor: Colors.white,
+            foregroundColor: Colors.black,
+            elevation: 0,
+            surfaceTintColor: Colors.transparent,
+          ),
+        ),
+        darkTheme: ThemeData.dark().copyWith(
+          appBarTheme: AppBarTheme(
+            backgroundColor: const Color(0xFF0B0F1A),
+            foregroundColor: Colors.white,
+            elevation: 0,
+            surfaceTintColor: Colors.transparent,
+          ),
+        ),
         themeMode: settingsController.isDarkMode.value
             ? ThemeMode.dark
             : ThemeMode.light,

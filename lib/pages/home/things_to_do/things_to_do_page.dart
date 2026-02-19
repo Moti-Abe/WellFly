@@ -17,24 +17,7 @@ class _ThingsToDoPageState extends State<ThingsToDoPage> {
 
   // Sample activities data (use local assets to avoid network failures)
   final List<Map<String, String>> activities = [
-    {
-      'title': 'Statue of Liberty Tour',
-      'subtitle': 'New York',
-      'imageUrl': 'assets/images/p1.jpg',
-      'price': '\$45',
-    },
-    {
-      'title': 'Eiffel Tower Experience',
-      'subtitle': 'Paris',
-      'imageUrl': 'assets/images/p2.jpg',
-      'price': '\$35',
-    },
-    {
-      'title': 'Big Ben Walking Tour',
-      'subtitle': 'London',
-      'imageUrl': 'assets/images/flight.jpg',
-      'price': '\$25',
-    },
+  
     {
       'title': 'Colosseum Night Tour',
       'subtitle': 'Rome',

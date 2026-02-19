@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../widgets/travel_image_section.dart';
 import '../OnewayPage/models/one_way_models.dart';
 import '../OnewayPage/pages/one_way_recommended_page.dart';
 import 'flight_date_field.dart';
@@ -73,6 +74,7 @@ class _OneWayState extends State<OneWayWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Form(
@@ -104,16 +106,23 @@ class _OneWayState extends State<OneWayWidget> {
                     onTap: _swapCities,
                     child: Container(
                       padding: const EdgeInsets.all(8),
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
+                      decoration: BoxDecoration(
+                        color: isDark ? const Color(0xFF1E2433) : Colors.white,
                         shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(color: Colors.black12, blurRadius: 4),
-                        ],
+                        border: Border.all(
+                          color: isDark
+                              ? const Color(0xFF2A3141)
+                              : Colors.grey.shade400,
+                        ),
+                        boxShadow: isDark
+                            ? []
+                            : const [
+                                BoxShadow(color: Colors.black12, blurRadius: 4),
+                              ],
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.swap_vert,
-                        color: Colors.blue,
+                        color: isDark ? Colors.white70 : Colors.blue,
                         size: 28,
                       ),
                     ),
@@ -175,6 +184,7 @@ class _OneWayState extends State<OneWayWidget> {
                 }
               },
             ),
+            const TravelImageSection(),
           ],
         ),
       ),
