@@ -126,7 +126,7 @@ class RtFlightCard extends StatelessWidget {
                     const SizedBox(width: 38), // align with text above
                     Expanded(
                       child: Text(
-                        '${flight.fromCode} - ${flight.toCode}',
+                        '${flight.fromCode}(${_shortCity(flight.fromCity)}) - ${_shortCity(flight.toCity)}(${flight.toCode})',
                         style: TextStyle(color: mutedColor, fontSize: 13),
                       ),
                     ),
@@ -223,6 +223,10 @@ class RtFlightCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _shortCity(String city) {
+    return city.split(' (').first;
   }
 
   Widget _buildTimeConnector(bool isDark) {
