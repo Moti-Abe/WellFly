@@ -72,6 +72,10 @@ class _RtDepartingFlightsPageState extends State<RtDepartingFlightsPage> {
     return match?.group(1) ?? widget.criteria.to.split(' ').first;
   }
 
+  String get _fromCity => widget.criteria.from.split(' (').first;
+
+  String get _toCity => widget.criteria.to.split(' (').first;
+
   int _parseDurationMinutes(String d) {
     final hMatch = RegExp(r'(\d+)h').firstMatch(d);
     final mMatch = RegExp(r'(\d+)m').firstMatch(d);
@@ -222,7 +226,7 @@ class _RtDepartingFlightsPageState extends State<RtDepartingFlightsPage> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          '$_fromCode ⇄ $_toCode',
+                          '$_fromCode($_fromCity) - $_toCity($_toCode)',
                           style: TextStyle(
                             color: colors.onSurface,
                             fontSize: 14,
