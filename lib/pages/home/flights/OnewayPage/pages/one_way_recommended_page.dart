@@ -74,6 +74,14 @@ class _OneWayRecommendedPageState extends State<OneWayRecommendedPage> {
     return match?.group(1) ?? widget.criteria.to.split(' ').first;
   }
 
+  String get _fromCity {
+    return widget.criteria.from.split(' (').first;
+  }
+
+  String get _toCity {
+    return widget.criteria.to.split(' (').first;
+  }
+
   /// Returns a duration in minutes parsed from a string like "5h 30m".
   int _parseDurationMinutes(String d) {
     final hMatch = RegExp(r'(\d+)h').firstMatch(d);
@@ -227,7 +235,7 @@ class _OneWayRecommendedPageState extends State<OneWayRecommendedPage> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          '$_fromCode → $_toCode',
+                          '$_fromCode($_fromCity) - $_toCity($_toCode)',
                           style: TextStyle(
                             color: colors.onSurface,
                             fontSize: 14,
