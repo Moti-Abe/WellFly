@@ -20,8 +20,7 @@ class _RoundtripPageState extends State<RoundtripPage> {
   final _formKey = GlobalKey<FormState>();
   final fromController = TextEditingController();
   final toController = TextEditingController();
-  final departController = TextEditingController();
-  final returnController = TextEditingController();
+  final dateRangeController = TextEditingController();
 
   DateTime? _departDate;
   DateTime? _returnDate;
@@ -32,8 +31,7 @@ class _RoundtripPageState extends State<RoundtripPage> {
   void dispose() {
     fromController.dispose();
     toController.dispose();
-    departController.dispose();
-    returnController.dispose();
+    dateRangeController.dispose();
     super.dispose();
   }
 
@@ -63,38 +61,25 @@ class _RoundtripPageState extends State<RoundtripPage> {
     }
   }
 
-  void _pickDepartDate() async {
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: _departDate ?? DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2030),
-    );
-    if (picked != null) {
-      setState(() {
-        _departDate = picked;
-        departController.text = DateFormat('EEE, MMM d').format(picked);
-        // If return date is before depart, clear it
-        if (_returnDate != null && _returnDate!.isBefore(picked)) {
-          _returnDate = null;
-          returnController.clear();
-        }
-      });
-    }
-  }
+  void _pickDateRange() async {
+    final now = DateTime.now();
+    final initialStart = _departDate ?? now;
+    final initialEnd = _returnDate ?? now.add(const Duration(days: 3));
 
-  void _pickReturnDate() async {
-    final firstDate = _departDate ?? DateTime.now();
-    final picked = await showDatePicker(
+    final picked = await showDateRangePicker(
       context: context,
-      initialDate: _returnDate ?? firstDate.add(const Duration(days: 3)),
-      firstDate: firstDate,
+      firstDate: now,
       lastDate: DateTime(2030),
+      initialDateRange: DateTimeRange(start: initialStart, end: initialEnd),
     );
+
     if (picked != null) {
       setState(() {
-        _returnDate = picked;
-        returnController.text = DateFormat('EEE, MMM d').format(picked);
+        _departDate = picked.start;
+        _returnDate = picked.end;
+        final fmt = DateFormat('EEE, MMM d');
+        dateRangeController.text =
+            '${fmt.format(picked.start)} - ${fmt.format(picked.end)}';
       });
     }
   }
@@ -197,21 +182,12 @@ class _RoundtripPageState extends State<RoundtripPage> {
               ],
             ),
 
-            // Departure date
+            // Departure & Return (single field)
             _buildDateTile(
               icon: Icons.calendar_today,
-              label: 'Departure date',
-              controller: departController,
-              onTap: _pickDepartDate,
-            ),
-            const SizedBox(height: 12),
-
-            // Return date
-            _buildDateTile(
-              icon: Icons.calendar_today,
-              label: 'Return date',
-              controller: returnController,
-              onTap: _pickReturnDate,
+              label: 'Sun, Feb 22 - Wed, Feb 25',
+              controller: dateRangeController,
+              onTap: _pickDateRange,
             ),
             const SizedBox(height: 12),
 
