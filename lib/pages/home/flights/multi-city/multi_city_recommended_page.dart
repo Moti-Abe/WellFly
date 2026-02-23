@@ -829,18 +829,22 @@ class _MultiCityRecommendedPageState extends State<MultiCityRecommendedPage> {
 
   // ──────────── Helpers ────────────
   String _buildRouteLine(MultiCitySearchCriteria criteria) {
-    String shorten(String city) {
-      final match = RegExp(r'\((\w+)\)').firstMatch(city);
-      return match != null ? match.group(1)! : city.split(' ').first;
+    String fmt(String city) {
+      final codeMatch = RegExp(r'\((\w+)\)').firstMatch(city);
+      final code = codeMatch != null
+          ? codeMatch.group(1)!
+          : city.split(' ').last;
+      final name = city.split(' (').first;
+      return '$code($name)';
     }
 
     final segments = [
-      shorten(criteria.from1),
-      shorten(criteria.to1),
-      shorten(criteria.to2),
+      fmt(criteria.from1),
+      fmt(criteria.to1),
+      fmt(criteria.to2),
     ];
     if (criteria.hasThirdLeg) {
-      segments.add(shorten(criteria.to3!));
+      segments.add(fmt(criteria.to3!));
     }
     return segments.join(' → ');
   }
