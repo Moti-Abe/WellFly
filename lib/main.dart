@@ -4,10 +4,24 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'pages/account/controllers/setting_controller.dart';
 
-void main() {
+import 'package:expedia/data/services/api_service.dart';
+import 'package:expedia/data/services/airport_service.dart';
+import 'package:expedia/pages/home/flights/controllers/flight_controller.dart';
+
+import 'package:device_preview/device_preview.dart';
+
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Get.putAsync(() => ApiService().init());
+  await Get.putAsync(() => AirportSearchService().init());
+  Get.put(FlightController());
   Get.put(AuthController());
-  runApp(MyApp());
+  runApp(
+    DevicePreview(
+      enabled: true,
+      builder: (context) => MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -17,6 +31,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(
       () => GetMaterialApp(
+        useInheritedMediaQuery: true,
+        locale: DevicePreview.locale(context),
+        builder: DevicePreview.appBuilder,
         theme: ThemeData.light().copyWith(
           appBarTheme: const AppBarTheme(
             backgroundColor: Colors.white,
