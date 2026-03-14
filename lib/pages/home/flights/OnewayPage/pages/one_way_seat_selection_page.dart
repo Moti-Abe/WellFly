@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../../controllers/flight_controller.dart';
 import '../models/one_way_models.dart';
-import '../models/one_way_mock_data.dart';
+import 'package:expedia/pages/home/flights/OnewayPage/models/seat_model.dart';
 import '../widgets/booking_app_bar.dart';
 import '../widgets/booking_step_indicator.dart';
 import '../widgets/booking_bottom_bar.dart';
+import '../../widgets/shared_seat_map.dart';
 import 'one_way_bags_page.dart';
 
 /// Page 5: Seat selection with visual seat map.
@@ -21,11 +24,12 @@ class _OneWaySeatSelectionPageState extends State<OneWaySeatSelectionPage> {
   late List<List<SeatInfo>> _seatMap;
   String? _selectedSeat;
   double _seatPrice = 0;
+  final FlightController _controller = Get.find<FlightController>();
 
   @override
   void initState() {
     super.initState();
-    _seatMap = generateSeatMap();
+    _seatMap = _controller.getSeatMapFromApi().cast<List<SeatInfo>>();
   }
 
   double get _tripTotal {
@@ -68,18 +72,22 @@ class _OneWaySeatSelectionPageState extends State<OneWaySeatSelectionPage> {
               ),
             ),
           ),
-          // Column headers
-          _buildColumnHeaders(context),
           // Seat map
           Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.only(bottom: 16),
-              child: Column(
-                children: [
-                  for (int rowIdx = 0; rowIdx < _seatMap.length; rowIdx++)
-                    _buildSeatRow(context, rowIdx),
-                ],
-              ),
+            child: SharedSeatMap(
+              seatMap: _seatMap,
+              selectedSeat: _selectedSeat,
+              onSeatSelected: (seatLabel, price) {
+                setState(() {
+                  if (_selectedSeat == seatLabel) {
+                    _selectedSeat = null;
+                    _seatPrice = 0;
+                  } else {
+                    _selectedSeat = seatLabel;
+                    _seatPrice = price;
+                  }
+                });
+              },
             ),
           ),
         ],
@@ -227,164 +235,5 @@ class _OneWaySeatSelectionPageState extends State<OneWaySeatSelectionPage> {
     );
   }
 
-  Widget _buildColumnHeaders(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
-    final cols = ['A', 'B', 'C', '', 'D', 'E', 'F'];
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      child: Row(
-        children: [
-          const SizedBox(width: 24), // row number space
-          ...cols.map(
-            (col) => Expanded(
-              child: Center(
-                child: Text(
-                  col,
-                  style: TextStyle(
-                    color: colors.onSurface.withValues(alpha: 0.6),
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 24), // row number space right
-        ],
-      ),
-    );
-  }
 
-  Widget _buildSeatRow(BuildContext context, int rowIdx) {
-    final colors = Theme.of(context).colorScheme;
-    final row = _seatMap[rowIdx];
-    final rowNumber = rowIdx + 1;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 2),
-      child: Row(
-        children: [
-          // Row number left
-          SizedBox(
-            width: 24,
-            child: Text(
-              '',
-              style: TextStyle(
-                color: colors.onSurface.withValues(alpha: 0.5),
-                fontSize: 11,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-          // Seats
-          ...row.map((seat) {
-            if (seat.label.isEmpty) {
-              // Aisle
-              return Expanded(
-                child: Center(
-                  child: Text(
-                    '$rowNumber',
-                    style: TextStyle(
-                      color: colors.onSurface.withValues(alpha: 0.5),
-                      fontSize: 11,
-                    ),
-                  ),
-                ),
-              );
-            }
-            return Expanded(child: _buildSeat(context, seat));
-          }),
-          // Row number right
-          SizedBox(
-            width: 24,
-            child: Text(
-              '$rowNumber',
-              style: TextStyle(
-                color: colors.onSurface.withValues(alpha: 0.5),
-                fontSize: 11,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSeat(BuildContext context, SeatInfo seat) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final colors = Theme.of(context).colorScheme;
-    final isSelected = _selectedSeat == seat.label;
-    final isOccupied = seat.type == SeatType.occupied;
-
-    Color bgColor;
-    Color textColor;
-    String displayText;
-
-    if (isSelected) {
-      bgColor = const Color(0xFF1565C0);
-      textColor = Colors.white;
-      displayText = 'T1';
-    } else if (isOccupied) {
-      bgColor = isDark ? const Color(0xFF2A3141) : Colors.grey.shade300;
-      textColor = Colors.transparent;
-      displayText = '×';
-    } else {
-      bgColor = isDark ? const Color(0xFF1E2433) : Colors.grey.shade100;
-      textColor = colors.onSurface;
-      displayText = seat.extraPrice > 0
-          ? '\$${seat.extraPrice.toInt()}'
-          : '\$53';
-    }
-
-    return GestureDetector(
-      onTap: isOccupied
-          ? null
-          : () {
-              setState(() {
-                if (_selectedSeat == seat.label) {
-                  _selectedSeat = null;
-                  _seatPrice = 0;
-                } else {
-                  _selectedSeat = seat.label;
-                  _seatPrice = seat.extraPrice > 0 ? seat.extraPrice : 53;
-                }
-              });
-            },
-      child: Container(
-        height: 38,
-        margin: const EdgeInsets.all(2),
-        decoration: BoxDecoration(
-          color: bgColor,
-          borderRadius: BorderRadius.circular(6),
-          border: isOccupied
-              ? null
-              : Border.all(
-                  color: isSelected
-                      ? const Color(0xFF1565C0)
-                      : (isDark
-                            ? const Color(0xFF3A4556)
-                            : Colors.grey.shade400),
-                  width: isSelected ? 2 : 1,
-                ),
-        ),
-        child: Center(
-          child: isOccupied
-              ? Icon(
-                  Icons.close,
-                  size: 14,
-                  color: isDark ? Colors.grey.shade600 : Colors.grey.shade500,
-                )
-              : Text(
-                  displayText,
-                  style: TextStyle(
-                    color: textColor,
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-        ),
-      ),
-    );
-  }
 }
