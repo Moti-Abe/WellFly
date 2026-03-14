@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../../controllers/flight_controller.dart';
 import '../models/one_way_models.dart';
-import '../models/one_way_mock_data.dart';
 import '../widgets/booking_app_bar.dart';
 import '../widgets/booking_step_indicator.dart';
 import '../widgets/booking_bottom_bar.dart';
@@ -19,11 +20,12 @@ class OneWayBagsPage extends StatefulWidget {
 class _OneWayBagsPageState extends State<OneWayBagsPage> {
   final int _selectedBagIndex = 0; // default: no extra bags
   late List<BaggageOption> _options;
+  final FlightController _controller = Get.find<FlightController>();
 
   @override
   void initState() {
     super.initState();
-    _options = getBaggageOptions();
+    _options = _controller.getBaggageFromApi();
   }
 
   double get _bagsTotal => _options[_selectedBagIndex].price;
