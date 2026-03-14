@@ -1,39 +1,3 @@
-// import 'package:flutter/material.dart';
-
-// class BigMonthDeals extends StatelessWidget {
-//   const BigMonthDeals({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Card(
-//       margin: const EdgeInsets.only(top: 20),
-//       child: Padding(
-//         padding: const EdgeInsets.all(12),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: const [
-//             Text(
-//               "Big Month Deals",
-//               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-//             ),
-//             SizedBox(height: 8),
-//             ListTile(
-//               leading: Icon(Icons.local_offer),
-//               title: Text("January Deals"),
-//               subtitle: Text("Save up to 25%"),
-//             ),
-//             ListTile(
-//               leading: Icon(Icons.local_offer),
-//               title: Text("February Deals"),
-//               subtitle: Text("Save up to 20%"),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
 import 'package:flutter/material.dart';
 
 class BigMonthDeals extends StatelessWidget {
