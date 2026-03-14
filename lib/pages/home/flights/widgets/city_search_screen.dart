@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../../data/flight_data.dart';
+import 'package:get/get.dart';
+import '../controllers/flight_controller.dart';
+import '../../../../data/models/airport_model.dart';
 
 class CitySearchScreen extends StatefulWidget {
   final String title;
@@ -10,34 +12,24 @@ class CitySearchScreen extends StatefulWidget {
 }
 
 class _CitySearchScreenState extends State<CitySearchScreen> {
-  List<CityModel> filteredCities = [];
+  final FlightController _controller = Get.find<FlightController>();
   final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    filteredCities = allCities;
+    // Clear previous results when entering
+    _controller.searchResultsAirports.assignAll([]);
+    _controller.currentSearchQuery.value = '';
   }
 
-  void _runFilter(String enteredKeyword) {
-    List<CityModel> results = [];
-    if (enteredKeyword.isEmpty) {
-      results = allCities;
-    } else {
-      results = allCities
-          .where(
-            (city) =>
-                city.name.toLowerCase().contains(
-                  enteredKeyword.toLowerCase(),
-                ) ||
-                city.code.toLowerCase().contains(enteredKeyword.toLowerCase()),
-          )
-          .toList();
-    }
+  void _runFilter(String query) {
+    _controller.searchAirports(query);
+  }
 
-    setState(() {
-      filteredCities = results;
-    });
+  void _selectAirport(AirportModel airport) {
+    _controller.airportService.addRecentSearch(airport);
+    Navigator.pop(context, airport.displayName);
   }
 
   @override
@@ -55,7 +47,7 @@ class _CitySearchScreenState extends State<CitySearchScreen> {
             padding: const EdgeInsets.all(16.0),
             child: TextField(
               controller: _searchController,
-              onChanged: (value) => _runFilter(value), // Filter as you type
+              onChanged: (value) => _runFilter(value),
               autofocus: true,
               decoration: InputDecoration(
                 prefixIcon: const Icon(Icons.search, color: Colors.blue),
@@ -65,10 +57,11 @@ class _CitySearchScreenState extends State<CitySearchScreen> {
                         onPressed: () {
                           _searchController.clear();
                           _runFilter('');
+                          setState(() {});
                         },
                       )
                     : null,
-                hintText: "Where are you going?",
+                hintText: "City or Airport Code",
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
                   borderSide: BorderSide.none,
@@ -79,31 +72,89 @@ class _CitySearchScreenState extends State<CitySearchScreen> {
             ),
           ),
           Expanded(
-            child: filteredCities.isNotEmpty
-                ? ListView.builder(
-                    itemCount: filteredCities.length,
-                    itemBuilder: (context, index) {
-                      final city = filteredCities[index];
-                      return ListTile(
-                        leading: const Icon(
-                          Icons.location_on_outlined,
-                          color: Colors.grey,
-                        ),
-                        title: Text(city.fullName),
-                        subtitle: Text(city.country),
-                        onTap: () => Navigator.pop(context, city.fullName),
-                      );
-                    },
-                  )
-                : const Center(
-                    child: Text(
-                      "No cities found",
-                      style: TextStyle(fontSize: 16),
-                    ),
+            child: Obx(() {
+              final query = _controller.currentSearchQuery.value;
+
+              if (query.isEmpty || query.length < 3) {
+                return _buildEmptyState();
+              }
+
+              if (_controller.isSearchingAirports.value) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              final airports = _controller.searchResultsAirports;
+              if (airports.isEmpty) {
+                return const Center(
+                  child: Text(
+                    "No airports found",
+                    style: TextStyle(fontSize: 16),
                   ),
+                );
+              }
+
+              return ListView.builder(
+                itemCount: airports.length,
+                itemBuilder: (context, index) {
+                  final airport = airports[index];
+                  return _buildAirportTile(airport);
+                },
+              );
+            }),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildAirportTile(AirportModel airport) {
+    return ListTile(
+      leading: const Icon(Icons.flight_takeoff, color: Colors.grey),
+      title: Text(airport.displayName),
+      subtitle: Text(airport.country),
+      onTap: () => _selectAirport(airport),
+    );
+  }
+
+  Widget _buildEmptyState() {
+    final recent = _controller.airportService.recentSearches;
+    final popular = _controller.airportService.popularAirports;
+
+    return ListView(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      children: [
+        if (_searchController.text.isNotEmpty && _searchController.text.length < 3)
+          const Padding(
+            padding: EdgeInsets.only(bottom: 16.0),
+            child: Text(
+              "Please enter at least 3 characters to search",
+              style: TextStyle(color: Colors.grey, fontSize: 14),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        if (recent.isNotEmpty) ...[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text("Recent Searches", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              TextButton(
+                onPressed: () => _controller.airportService.clearRecentSearches(),
+                child: const Text("Clear"),
+              )
+            ],
+          ),
+          const SizedBox(height: 8),
+          ...recent.map((a) => _buildAirportTile(a)),
+          const Divider(),
+        ],
+        if (popular.isNotEmpty) ...[
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 8.0),
+            child: Text("Popular Airports", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+          ),
+          ...popular.map((a) => _buildAirportTile(a)),
+        ]
+      ],
     );
   }
 }
