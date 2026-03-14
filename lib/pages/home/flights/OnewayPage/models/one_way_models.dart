@@ -90,21 +90,6 @@ class FareFeature {
 
 enum FareFeatureType { included, paid, notIncluded }
 
-/// Seat on the plane.
-class SeatInfo {
-  final String label;
-  final SeatType type;
-  final double extraPrice;
-
-  const SeatInfo({
-    required this.label,
-    required this.type,
-    this.extraPrice = 0,
-  });
-}
-
-enum SeatType { available, occupied, premium, exit }
-
 /// Baggage option.
 class BaggageOption {
   final String label;
