@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import '../../../../data/models/flight_shopping_model.dart';
+import '../../../home/flights/controllers/flight_controller.dart';
 import '../../widgets/travel_image_section.dart';
 import '../OnewayPage/models/one_way_models.dart';
 import '../OnewayPage/pages/one_way_recommended_page.dart';
@@ -167,6 +171,35 @@ class _OneWayState extends State<OneWayWidget> {
             SearchButton(
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
+                  final controller = Get.find<FlightController>();
+                  
+                  // Extract airport codes
+                  final fromCode = _extractAirportCode(fromController.text);
+                  final toCode = _extractAirportCode(toController.text);
+                  final dateStr = DateFormat('yyyy-MM-dd').format(_selectedDate ?? DateTime.now());
+
+                  final request = FlightShoppingRequest(
+                    originDestinations: [
+                      OriginDestination(
+                        departure: Departure(airportCode: fromCode, date: dateStr),
+                        arrival: Arrival(airportCode: toCode),
+                      ),
+                    ],
+                    travellers: Travellers(adt: travelers),
+                    preference: Preference(
+                      cabinPreferences: CabinPreferences(
+                        cabinType: CabinType(code: cabinClass),
+                      ),
+                    ),
+                    promoCode: "075026",
+                    corporateCode: CorporateCode(
+                      accountNumber: ["075026"],
+                      airlineCode: "QR",
+                    ),
+                  );
+
+                  controller.searchFlights(request);
+
                   final criteria = OneWaySearchCriteria(
                     from: fromController.text,
                     to: toController.text,
@@ -189,5 +222,11 @@ class _OneWayState extends State<OneWayWidget> {
         ),
       ),
     );
+  }
+
+  String _extractAirportCode(String text) {
+    if (text.isEmpty) return text;
+    final parts = text.split(' - ');
+    return parts.first;
   }
 }
