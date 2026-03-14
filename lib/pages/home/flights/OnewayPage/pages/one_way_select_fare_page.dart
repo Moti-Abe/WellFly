@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import '../../controllers/flight_controller.dart';
 import '../models/one_way_models.dart';
-import '../models/one_way_mock_data.dart';
 import 'one_way_review_trip_page.dart';
 
 /// Page 3: Select fare — shows flight header + horizontally scrollable fare cards.
@@ -23,7 +24,7 @@ class OneWaySelectFarePage extends StatelessWidget {
         ? const Color(0xFF0B0F1A)
         : const Color(0xFFF5F5F5);
     final destCity = flight.toCity.split(' (').first;
-    final fares = getFareOptions();
+    final controller = Get.find<FlightController>();
 
     return Scaffold(
       backgroundColor: pageBackground,
@@ -51,17 +52,20 @@ class OneWaySelectFarePage extends StatelessWidget {
             _buildFlightHeader(context),
             const SizedBox(height: 16),
             // Horizontally scrollable fare cards
-            SizedBox(
-              height: 520,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                itemCount: fares.length,
-                itemBuilder: (context, index) {
-                  return _buildFareCard(context, fares[index]);
-                },
-              ),
-            ),
+            Obx(() {
+              final fares = controller.getFaresFromApi();
+              return SizedBox(
+                height: 520,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  itemCount: fares.length,
+                  itemBuilder: (context, index) {
+                    return _buildFareCard(context, fares[index]);
+                  },
+                ),
+              );
+            }),
             const SizedBox(height: 24),
           ],
         ),
@@ -252,6 +256,9 @@ class OneWaySelectFarePage extends StatelessWidget {
                     flight: flight,
                     fare: fare,
                   );
+                  
+                  // controller.selectOffer is now called before this page opens
+
                   Navigator.push(
                     context,
                     MaterialPageRoute(
