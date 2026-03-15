@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:expedia/pages/home/flights/OnewayPage/models/seat_model.dart';
+import '../../controllers/flight_controller.dart';
 import '../models/round_trip_models.dart';
-import '../models/round_trip_mock_data.dart';
 import '../widgets/rt_step_indicator.dart';
 import '../widgets/rt_bottom_bar.dart';
 import 'rt_bags_page.dart';
@@ -16,8 +18,8 @@ class RtSeatSelectionPage extends StatefulWidget {
 }
 
 class _RtSeatSelectionPageState extends State<RtSeatSelectionPage> {
-  late List<List<RtSeatInfo>> _departSeatMap;
-  late List<List<RtSeatInfo>> _returnSeatMap;
+  late List<List<SeatInfo>> _departSeatMap;
+  late List<List<SeatInfo>> _returnSeatMap;
 
   // 0 = departure, 1 = return
   int _activeSegment = 0;
@@ -26,16 +28,13 @@ class _RtSeatSelectionPageState extends State<RtSeatSelectionPage> {
   double _departSeatPrice = 0;
   String? _returnSeat;
   double _returnSeatPrice = 0;
+  final FlightController _controller = Get.find<FlightController>();
 
   @override
   void initState() {
     super.initState();
-    _departSeatMap = generateRtSeatMap(
-      seed: widget.booking.departureFlight.id.hashCode,
-    );
-    _returnSeatMap = generateRtSeatMap(
-      seed: widget.booking.returnFlight.id.hashCode,
-    );
+    _departSeatMap = _controller.getRtSeatMapFromApi().cast<List<SeatInfo>>();
+    _returnSeatMap = _controller.getRtSeatMapFromApi().cast<List<SeatInfo>>();
   }
 
   double get _totalSeatPrice => _departSeatPrice + _returnSeatPrice;
@@ -49,7 +48,7 @@ class _RtSeatSelectionPageState extends State<RtSeatSelectionPage> {
         _totalSeatPrice;
   }
 
-  List<List<RtSeatInfo>> get _activeSeatMap =>
+  List<List<SeatInfo>> get _activeSeatMap =>
       _activeSegment == 0 ? _departSeatMap : _returnSeatMap;
 
   String? get _activeSeat => _activeSegment == 0 ? _departSeat : _returnSeat;
@@ -359,12 +358,12 @@ class _RtSeatSelectionPageState extends State<RtSeatSelectionPage> {
     );
   }
 
-  Widget _buildSeat(BuildContext context, RtSeatInfo seat) {
+  Widget _buildSeat(BuildContext context, SeatInfo seat) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final colors = Theme.of(context).colorScheme;
     final selectedSeat = _activeSeat;
     final isSelected = selectedSeat == seat.label;
-    final isOccupied = seat.type == RtSeatType.occupied;
+    final isOccupied = seat.type == SeatType.occupied;
 
     Color bgColor;
     Color textColor;
