@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:get/get.dart';
+import '../../../../data/models/flight_shopping_model.dart';
+import '../../../../pages/home/flights/controllers/flight_controller.dart';
 import '../widgets/flight_text_field.dart';
 import '../widgets/search_button.dart';
 import '../../widgets/travel_image_section.dart';
@@ -105,6 +108,35 @@ class _RoundtripPageState extends State<RoundtripPage> {
   void _performSearch() {
     if (!_formKey.currentState!.validate()) return;
 
+    final controller = Get.find<FlightController>();
+    
+    // Extract airport codes
+    final fromCode = _extractAirportCode(fromController.text);
+    final toCode = _extractAirportCode(toController.text);
+    final dateStr = DateFormat('yyyy-MM-dd').format(_departDate ?? DateTime.now());
+
+    final request = FlightShoppingRequest(
+      originDestinations: [
+        OriginDestination(
+          departure: Departure(airportCode: fromCode, date: dateStr),
+          arrival: Arrival(airportCode: toCode),
+        ),
+      ],
+      travellers: Travellers(adt: travelers),
+      preference: Preference(
+        cabinPreferences: CabinPreferences(
+          cabinType: CabinType(code: cabinClass),
+        ),
+      ),
+      promoCode: "075026",
+      corporateCode: CorporateCode(
+        accountNumber: ["075026"],
+        airlineCode: "QR",
+      ),
+    );
+
+    controller.searchFlights(request);
+
     final criteria = RoundTripSearchCriteria(
       from: fromController.text,
       to: toController.text,
@@ -120,6 +152,12 @@ class _RoundtripPageState extends State<RoundtripPage> {
         builder: (context) => RtDepartingFlightsPage(criteria: criteria),
       ),
     );
+  }
+
+  String _extractAirportCode(String text) {
+    if (text.isEmpty) return text;
+    final parts = text.split(' - ');
+    return parts.first;
   }
 
   @override
