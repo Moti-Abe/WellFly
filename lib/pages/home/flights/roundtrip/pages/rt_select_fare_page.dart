@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import '../../controllers/flight_controller.dart';
 import '../models/round_trip_models.dart';
-import '../models/round_trip_mock_data.dart';
 import 'rt_review_trip_page.dart';
 
 /// Page 4: Select fare — shows both flights header + horizontally scrollable fare cards.
@@ -25,7 +26,7 @@ class RtSelectFarePage extends StatelessWidget {
         ? const Color(0xFF0B0F1A)
         : const Color(0xFFF5F5F5);
     final destCity = departureFlight.toCity.split(' (').first;
-    final fares = getRtFareOptions();
+    final controller = Get.find<FlightController>();
 
     return Scaffold(
       backgroundColor: pageBackground,
@@ -65,16 +66,19 @@ class RtSelectFarePage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 12),
-            SizedBox(
-              height: 540,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                itemCount: fares.length,
-                itemBuilder: (context, index) =>
-                    _buildFareCard(context, fares[index]),
-              ),
-            ),
+            Obx(() {
+              final fares = controller.getRtFaresFromApi();
+              return SizedBox(
+                height: 540,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  itemCount: fares.length,
+                  itemBuilder: (context, index) =>
+                      _buildFareCard(context, fares[index]),
+                ),
+              );
+            }),
             const SizedBox(height: 24),
           ],
         ),
