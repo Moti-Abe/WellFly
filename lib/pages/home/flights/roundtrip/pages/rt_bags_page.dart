@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../../controllers/flight_controller.dart';
 import '../models/round_trip_models.dart';
-import '../models/round_trip_mock_data.dart';
 import '../widgets/rt_step_indicator.dart';
 import '../widgets/rt_bottom_bar.dart';
 import 'rt_secure_booking_page.dart';
@@ -18,11 +19,12 @@ class RtBagsPage extends StatefulWidget {
 class _RtBagsPageState extends State<RtBagsPage> {
   final int _selectedBagIndex = 0;
   late List<RtBaggageOption> _options;
+  final FlightController _controller = Get.find<FlightController>();
 
   @override
   void initState() {
     super.initState();
-    _options = getRtBaggageOptions();
+    _options = _controller.getRtBaggageFromApi();
   }
 
   double get _bagsTotal => _options[_selectedBagIndex].price;
