@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'multi-city/multi_city_search_page.dart';
+import 'multi-city/pages/multi_city_search_page.dart';
 
 class MultiCityPage extends StatefulWidget {
   const MultiCityPage({super.key});
